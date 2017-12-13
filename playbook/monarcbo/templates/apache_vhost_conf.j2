@@ -1,10 +1,10 @@
 {% if protocol == "https" %}
 <VirtualHost *:80>
-	ServerName {{ bourlalias }}.{{ env_prefix }}.{{ clientDomain }}
-	Redirect permanent / https://{{ bourlalias }}.{{ env_prefix }}.{{ clientDomain }}
+	ServerName {{ bourlalias }}.{{ clientDomain }}
+	Redirect permanent / https://{{ bourlalias }}.{{ clientDomain }}
 </VirtualHost>
 <VirtualHost _default_:443>
-        ServerName {{ bourlalias }}.{{ env_prefix }}.{{ clientDomain }}
+        ServerName {{ bourlalias }}.{{ clientDomain }}
         DocumentRoot /var/lib/monarc/bo/MonarcAppBO/public/
 
 	    RewriteEngine On
