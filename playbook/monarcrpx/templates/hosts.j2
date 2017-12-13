@@ -1,13 +1,17 @@
 127.0.0.1       localhost
-{{ lookup("dig",groups['rpx'][0]+'.'+localDNS) }}    rpx.{{ clientDomain }} rpx
+127.0.1.1       rpx.{{ clientDomain }} rpx
 
-{{ lookup("dig",groups['master'][0]+'.'+localDNS) }}   {{ bourlalias }}.{{clientDomain}}
+127.0.0.1       {{ bourlalias }}.{{clientDomain}}
+
+127.0.0.1       FO
+127.0.0.1       BO
+127.0.0.1       monarc
 
 {% for server in groups['dev'] %}
 {% set hostname = hostvars[server]['inventory_hostname'] %}
 {% if 'clients' in hostvars[server]  %}
 {% for key,client in hostvars[server]['clients'].iteritems() %}
-{{ lookup("dig",server+'.'+localDNS) }}     {{client.name}}.{{ clientDomain }}
+127.0.0.1     {{client.name}}.{{ clientDomain }}
 {% endfor %}
 {% endif %}
 {% endfor %}
