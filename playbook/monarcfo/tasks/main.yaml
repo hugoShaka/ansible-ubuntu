@@ -71,8 +71,7 @@
     state: directory
     owner: root
     group: adm
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: disable all apache virtual hosts
@@ -84,8 +83,7 @@
     src: client_apache.conf.j2
     dest: "/etc/apache2/sites-available/{{ item.value.name }}.conf"
     owner: root
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   notify:
     - reload apache
   become: True
@@ -98,8 +96,7 @@
 
 - name: enable apache conf
   command: "/usr/sbin/a2ensite {{item.value.name}}.conf"
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: logrotate conf
@@ -110,8 +107,7 @@
   file:
     name: "/var/www/{{item.value.name}}"
     state: directory
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: client config file
@@ -120,8 +116,7 @@
     dest: "/var/www/{{item.value.name}}/local.php"
     owner: www-data
     mode: 0600
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: create client data dir
@@ -129,26 +124,22 @@
     name: "/var/www/{{item.value.name}}/data"
     state: directory
     owner: www-data
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: copy default deliveries templates
   command: cp -nR /var/lib/monarc/fo/deliveries/ /var/www/{{item.value.name}}/
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: set owner of deliveries
   command: chown -R www-data:www-data /var/www/{{item.value.name}}/deliveries
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: set appropriate rights for deliveries
   command: chmod -R go+w /var/www/{{item.value.name}}/deliveries
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: client cache upgrade
@@ -156,24 +147,21 @@
     path: "/var/www/{{item.value.name}}/data/upgrade"
     owner: www-data
     state: touch
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: deleting client cache
   file:
     path: /var/www/{{ item.value.name }}/data/cache/
     state: absent
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: client database creation
   mysql_db:
     name: "{{ item.value.name }}"
     config_file: /etc/mysql/debian.cnf
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: client database user creation
@@ -182,30 +170,26 @@
     password: "{{ item.value.mysql_password }}"
     priv: "{{ item.value.name }}.*:ALL"
     config_file: /etc/mysql/debian.cnf
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: client db migration
   shell: "scripts/client-upgrade-db.sh MonarcFO localhost {{ item.value.name }} {{ item.value.mysql_password }} {{ item.value.name }}"
   args:
     chdir: /var/lib/monarc/fo
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
 
 - name: bootstrap file
   template:
     src: client_bootstrap.j2
     dest: "/tmp/bootstrap_{{ item.value.name }}.sql"
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
 
 - name: initialize client db
   shell: "if [ $( echo 'select count(id) from users;' | mysql --defaults-file=/etc/mysql/debian.cnf -N {{ item.value.name }} ) -eq 0  ] ; then mysql --defaults-file=/etc/mysql/debian.cnf {{ item.value.name }} < /tmp/bootstrap_{{ item.value.name }}.sql ;  fi"
   args:
     chdir: /var/lib/monarc/fo
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: True
 
 - name: database backup script
@@ -214,6 +198,5 @@
     dest: "/usr/local/bin/backup_monarc_db.sh"
     mode: 0755
     owner: root
-  with_dict: "{{ clients }}"
-  when: clients is defined
+  with_dict: "{{ clients|default({}) }}"
   become: true
