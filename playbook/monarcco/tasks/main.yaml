@@ -39,6 +39,7 @@
     - python-mysqldb
     - gettext
     - jq
+    - composer
 
 - name: apache ssl
   apache2_module:
