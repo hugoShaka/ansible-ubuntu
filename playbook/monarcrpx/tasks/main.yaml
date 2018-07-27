@@ -60,6 +60,22 @@
   notify:
     - restart apache
 
+- name: check if certificate exists
+  stat: path="{{ certificate }}"
+  register: cert
+
+- fail:
+    msg: >
+          "Certificate does not exist (path: {{ certificate }}).
+          If you want to generate certs please set 'generate_certs' to true"
+  when: "(not cert.stat.exists) and (not {{ generate_certs }})"
+
+- name: generate apache ssl certs
+  command: "openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj '/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.example.com' -keyout {{ certificatekey }} -out {{ certificate }}"
+  args:
+    creates: "{{ certificatekey }}"
+  when: "{{ generate_certs }}"
+
 - name: proxy pass apache configuration
   template:  src=clients_redirection.j2 dest=/etc/apache2/client_redirection
   become: True

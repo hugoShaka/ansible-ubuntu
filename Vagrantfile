@@ -20,7 +20,7 @@ Vagrant.configure("2") do |config|
   && apt update \
   && apt install vim less ansible python-dnspython -y \
   && cd /vagrant/playbook \
-  && ansible-playbook -i ../inventory/hosts monarc.yaml"
+  && ansible-playbook -i ../inventory/hosts monarc.yaml --extra-vars 'generate_certs=true'"
 
 end
 
