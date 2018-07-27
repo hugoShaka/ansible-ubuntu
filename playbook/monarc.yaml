@@ -3,6 +3,8 @@
   #strategy: debug
   roles:
     - monarcfo
+  become: True
+  become_user: root
 
 - name: master
   hosts: master
@@ -16,7 +18,7 @@
   roles:
     - monarcrpx
 
-- name: all monarc
-  hosts: monarc
-  roles:
-    - sshaccess
+  #- name: all monarc
+  #  hosts: monarc
+  #  roles:
+  #    - sshaccess

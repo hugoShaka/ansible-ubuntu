@@ -96,8 +96,8 @@
     src: local.php.j2
     dest: /var/lib/monarc/bo/MonarcAppBO/config/autoload/local.php
     mode: 0440
-    owner: "{{ ansible_user }}"
-    group: "{{ ansible_user }}"
+    owner: "{{ monarch_user }}"
+    group: "www-data"
   become: True
 
 - name: update-all

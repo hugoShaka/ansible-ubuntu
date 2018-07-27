@@ -97,6 +97,7 @@ If you encounter a problem of locales, try the following:
         certificatechain="sslcert.crt"
         bourlalias="monarcbo"
         localDNS="example.com"
+        monarc_user="ansible"
 
   The variable *monarc\_sql\_password* is the password for the SQL database
   on the BO.

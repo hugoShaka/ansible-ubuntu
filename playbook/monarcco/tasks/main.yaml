@@ -39,24 +39,25 @@
     - python-mysqldb
     - gettext
     - jq
-  become: True
 
 - name: apache ssl
   apache2_module:
     name: ssl
-  become: True
   notify:
     - restart apache
+
+- name: Create monarch user
+  user:
+    name: "{{ monarch_user }}"
+    group: "www-data"
 
 - name: monarc directory
   file:
     path: /var/lib/monarc
     state: directory
-    owner: "{{ ansible_user }}"
+    owner: "{{ monarch_user }}"
     mode: 0755
-  become: True
 
 - name: install grunt
   command: npm install -g grunt grunt-cli creates=/usr/local/bin/grunt
-  become: True
 
