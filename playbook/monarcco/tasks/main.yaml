@@ -47,16 +47,16 @@
   notify:
     - restart apache
 
-- name: Create monarch user
+- name: Add user to www-data
   user:
-    name: "{{ monarch_user }}"
+    name: "{{ ansible_user }}"
     group: "www-data"
 
 - name: monarc directory
   file:
     path: /var/lib/monarc
     state: directory
-    owner: "{{ monarch_user }}"
+    owner: "{{ ansible_user }}"
     mode: 0755
 
 - name: install grunt

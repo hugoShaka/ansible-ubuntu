@@ -1,10 +1,15 @@
+- name: base
+  hosts: monarc
+  roles:
+    - monarcco
+  become: True
+  become_user: root
+
 - name: clients
   hosts: dev
   #strategy: debug
   roles:
     - monarcfo
-  become: True
-  become_user: root
 
 - name: master
   hosts: master
